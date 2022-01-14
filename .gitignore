@@ -1,0 +1,17 @@
+# pycache
+*.pyc
+
+# Log file
+*.log
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# LaTex
+*.gz
