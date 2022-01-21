@@ -4,6 +4,7 @@ version = "1.0"
 """
 import hashlib
 import secrets
+from unittest import result
 
 
 from Crypto.Cipher import AES
@@ -34,17 +35,32 @@ def generate_evaluations(n,t,k,coef):
         evaluations.append(tmp)
     return evaluations
 
-# Recive una lista con x,f(x)
+# Recibe una lista con x,f(x)
+# Evalua el polinomio P(0)
+# Regresa k
 def lagrange_polynomial(nlist):
-    i=0
-    j=0
+    i = 0
+    j = 0
+    tmp = 1
+    result = 0
     while(i < len(nlist)):
-        print(nlist[i][j])
-        if (j== len(nlist[i])-1):
-            i=i+1
-            j=0
-        else:
+        if(j==len(nlist)): 
+            j = 0
+            tmp = 1
+        while(j < len(nlist)):
+            if(i != j):
+                x_i = int(nlist[i][0])
+                x_j = int(nlist[j][0])
+                subtraction = x_i-x_j
+                tmp = (-x_j / (subtraction))*tmp  
             j=j+1
+        
+        fx = int(nlist[i][1])
+        a = tmp * fx
+        result = result + a
+        i=i+1
+        
+    return result
             
     
 
@@ -58,13 +74,14 @@ def cypher():
     print("Contraseña: ")
     password = str(getpass()).encode('utf-8').strip()
     h = hashlib.sha256(password).hexdigest()
-    k = int(h,16)
+    k = 3
     
     key = hashlib.sha256(password).digest()
+    
+    print("=="+str(k)+"==\n[["+str(key)+"]]")
     coefficients = generate_coefficients(t+1,k) # Grado del polinomio
     
     ev = generate_evaluations(n,t,k,coefficients) # lista
-    
     texto = read_txt(clean_file)
     data = texto.encode("utf-8")
     cipher = AES.new(key,AES.MODE_EAX)
@@ -75,13 +92,14 @@ def cypher():
     write_txt(clean_file+".aes",str(ciphertext))
     str_ev = "\n".join(str(i) for i in ev)
     write_txt(file+".frg",str_ev)
-    
 
     
     
 def decipher():
     evaluations_file = str(input()) # archivo con t de las n evaluaciones de polinomio
-    #encrypted_file = str(input()) # nombre del archivo cifrado
+    encrypted_file = str(input()) # nombre del archivo cifrado
+    
+    ciphertext = read_txt(encrypted_file)
     
     ev = read_txt(evaluations_file)
     evlist = ev.split("\n")
@@ -90,8 +108,8 @@ def decipher():
         t = e.split(",")
         nlist.append(t)
         
-    lagrange_polynomial(nlist)
-    
+    hex_key = float.hex(lagrange_polynomial(nlist))
+    print(hex_key)
     #cipher = AES.new(key, AES.MODE_EAX)
     #nonce = cipher.nonce
     #texto_plano = cipher.decrypt(ciphertext)
