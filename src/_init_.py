@@ -5,6 +5,7 @@ version = "1.0"
 import hashlib
 import secrets
 
+
 from Crypto.Cipher import AES
 from getpass import getpass
 
@@ -32,7 +33,19 @@ def generate_evaluations(n,t,k,coef):
         tmp = str(x)+","+str(value)
         evaluations.append(tmp)
     return evaluations
-        
+
+# Recive una lista con x,f(x)
+def lagrange_polynomial(nlist):
+    i=0
+    j=0
+    while(i < len(nlist)):
+        print(nlist[i][j])
+        if (j== len(nlist[i])-1):
+            i=i+1
+            j=0
+        else:
+            j=j+1
+            
     
 
 
@@ -70,8 +83,15 @@ def decipher():
     evaluations_file = str(input()) # archivo con t de las n evaluaciones de polinomio
     #encrypted_file = str(input()) # nombre del archivo cifrado
     
-    evfile = read_txt(evaluations_file)
-    print(evfile)
+    ev = read_txt(evaluations_file)
+    evlist = ev.split("\n")
+    nlist=[]
+    for e in evlist:
+        t = e.split(",")
+        nlist.append(t)
+        
+    lagrange_polynomial(nlist)
+    
     #cipher = AES.new(key, AES.MODE_EAX)
     #nonce = cipher.nonce
     #texto_plano = cipher.decrypt(ciphertext)

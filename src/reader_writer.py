@@ -3,9 +3,9 @@ author = "Natalia Pérez Romero"
 version = "1.0"
 """
 
-from pickle import FALSE
-
-
+# Lee el contenido en un archivo 
+# Recibe el nombre del archivo
+# Regresa el contenido de archivo o una cadena vacía
 def read_txt(file_name):
     try:
         with open(file_name,'r') as f:
