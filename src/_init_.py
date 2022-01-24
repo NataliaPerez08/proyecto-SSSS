@@ -4,14 +4,16 @@ version = "1.0"
 """
 import hashlib
 import secrets
-from unittest import result
-
 
 from Crypto.Cipher import AES
 from getpass import getpass
-
 from reader_writer import read_txt,write_txt
 
+
+# Algoritmo de Horner
+# Recibe x el punto del domino en el que se va evaluar 
+# n es el número de coeficientes
+# coef es el arreglo de coeficientes
 def horner_algorithm(x, n,coef):
     result = 0
     i=n-1
@@ -19,13 +21,23 @@ def horner_algorithm(x, n,coef):
         result = (result * x) +coef[i]
         i = i-1
     return result
-    
+
+
+# Recibe el grado del polinomio, es 
+# decir cuanto coeficientes elegir
+# y la variable independiente k
 def generate_coefficients(re,k):
     coe = [k]
     for i in range(1,re):
         coe.append(secrets.randbelow(k)+1)
     return coe
 
+# Genera una lista con la forma [x,f(x)]
+# Recibe:
+# n el numero de coeficientes
+# t el numero se evaluaciones requeridas
+# k la variable independiente
+# coef el arrevlo de coeficientes  
 def generate_evaluations(n,t,k,coef):
     evaluations = []
     for i in range(t):
@@ -64,7 +76,7 @@ def lagrange_polynomial(nlist):
             
     
 
-
+# Se encarga de recibir la entrada y cifrar lo pedido
 def cypher():
     file = str(input())   # Archivo para guarda n evaluaciones del polinomio
     n = int(input())  # num total de evaluaciones requeridas n>2
@@ -74,12 +86,11 @@ def cypher():
     print("Contraseña: ")
     password = str(getpass()).encode('utf-8').strip()
     h = hashlib.sha256(password).hexdigest()
-    k = 3
+    k = int(h,16)
     
     key = hashlib.sha256(password).digest()
     
-    print("=="+str(k)+"==\n[["+str(key)+"]]")
-    coefficients = generate_coefficients(t+1,k) # Grado del polinomio
+    coefficients = generate_coefficients(n,k) # Grado del polinomio
     
     ev = generate_evaluations(n,t,k,coefficients) # lista
     texto = read_txt(clean_file)
@@ -94,7 +105,8 @@ def cypher():
     write_txt(file+".frg",str_ev)
 
     
-    
+
+# Se encarga de recibir la entrada y descifrar lo pedido 
 def decipher():
     evaluations_file = str(input()) # archivo con t de las n evaluaciones de polinomio
     encrypted_file = str(input()) # nombre del archivo cifrado
@@ -108,12 +120,13 @@ def decipher():
         t = e.split(",")
         nlist.append(t)
         
-    hex_key = float.hex(lagrange_polynomial(nlist))
-    print(hex_key)
-    #cipher = AES.new(key, AES.MODE_EAX)
-    #nonce = cipher.nonce
-    #texto_plano = cipher.decrypt(ciphertext)
-    #print(texto_plano.decode('utf-8'))
+    int_key = int(lagrange_polynomial(nlist))
+    print(int_key)
+    key = int_key.to_bytes(128,'big')
+    cipher = AES.new(key, AES.MODE_EAX)
+    nonce = cipher.nonce
+    texto_plano = cipher.decrypt(ciphertext)
+    print(texto_plano.decode('utf-8'))
     
     
     
