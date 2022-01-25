@@ -4,10 +4,11 @@ version = "1.0"
 """
 import hashlib
 import secrets
+import struct
 
 from Crypto.Cipher import AES
 from getpass import getpass
-from reader_writer import read_txt,write_txt
+from .reader_writer import read_txt,write_txt
 
 
 # Algoritmo de Horner
@@ -120,10 +121,14 @@ def decipher():
         t = e.split(",")
         nlist.append(t)
         
-    int_key = int(lagrange_polynomial(nlist))
-    print(int_key)
-    key = int_key.to_bytes(128,'big')
-    cipher = AES.new(key, AES.MODE_EAX)
+    float_key = lagrange_polynomial(nlist)
+    
+    key = struct.pack('d',float_key)
+    
+    tmp = key.zfill(16)
+    
+    
+    cipher = AES.new(tmp, AES.MODE_EAX)
     nonce = cipher.nonce
     texto_plano = cipher.decrypt(ciphertext)
     print(texto_plano.decode('utf-8'))
