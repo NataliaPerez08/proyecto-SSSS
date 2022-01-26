@@ -12,8 +12,9 @@ Instalar PyCrypto mediante pip:
 pip install pycryptodome
 ```
 
-# Ejecución del Programa
-Para ejecutar el proyecto: desde la terminal en la carpeta del proyecto ejecutar lo siguiente:
+# Ejecución del Programa y pruebas
+
+Desde la terminal en la carpeta del proyecto ejecutar lo siguiente:
 ```
-python src/_init_.py
+python main_test.py
 ```

@@ -20,6 +20,15 @@ class Test(unittest.TestCase):
         ex = "Lorem ipsum dolor sit amet, consectetur adipiscing elit "
         self.assertNotEqual(read,ex)
         
+    
+    # Comprueba que lo que se escribe un método es lo mismo que va leer el otro método.
+    def test_read_write(self):
+        content="Advanced Encryption Standard (AES) es uno de los algoritmos de cifrado más utilizados y seguros actualmente disponibles. "
+        write_txt("test2.txt",content)
+        read = read_txt("test2.txt")
+        self.assertEqual(content,read)
+        
+        
     # Prueba que se generen los coeficientes necesarios
     def test_generate_coefficients(self):
         i=random.randint(5,1000)
@@ -28,6 +37,7 @@ class Test(unittest.TestCase):
             l = len(lge)
             self.assertEqual(i,l)
             i=i-1
+            
             
     # Prueba que el algorimo este correctamente implementado
     def test_horner_algorithm(self):
@@ -39,12 +49,14 @@ class Test(unittest.TestCase):
             self.assertEqual(l,fx)
             x=x-1
             
+            
     # Prueba que dado dos puntos cuando se evalue 
     # el polinomio f(x)=Ax^2+k en f(0)=k en este caso 0
     def test_lagrande_polynomial(self):
         nlist = [[2,4],[4,8]]  # Dos puntos (x,fx) de x^2
         fx = lagrange_polynomial(nlist)
         self.assertEqual(0,fx)
+    
     
     # Prueba que dado tres puntos cuando se evalue 
     # el polinomio f(x)=Ax^3+k en f(0)=k en este caso 5
@@ -53,7 +65,6 @@ class Test(unittest.TestCase):
         fx = lagrange_polynomial(nlist)
         self.assertEqual(5,fx)
        
-    
 
 if __name__== '__main__':
     unittest.main()
